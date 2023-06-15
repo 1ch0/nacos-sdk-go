@@ -33,8 +33,9 @@ const (
 	NacosAction            = "action"            // 添加权限，动作字段[r, w, rw]
 	NacosCustomNamespaceId = "customNamespaceId" // 命名空间ID,与命名空间名保持一致
 	NacosNamespaceName     = "namespaceName"     // 命名空间名
+	NacosNamespaceShowName = "namespaceShowName" // 命名空间名
 	NacosNamespaceDesc     = "namespaceDesc"     // 命名空间描述，与命名空间名保持一致
-	NacosNamespaceIdDelete = "namespaceId"       //命名空间ID,删除命名空间时所需参数
+	NacosNamespaceId       = "namespaceId"       //命名空间ID,删除命名空间时所需参数
 	NacosENV               = "env"               //环境
 	NacosServerAddr        = "nacosUrl"          // nacos服务器地址，example: http://xxx.com:80
 
@@ -49,7 +50,7 @@ const (
 	// NACOS 权限认证
 
 	NacosAuth       = "/nacos/v1/auth/login"         // 鉴权
-	NacosNamespace  = "/nacos/v1/console/namespaces" // 命名空间
+	NacosNamespaces = "/nacos/v1/console/namespaces" // 命名空间
 	NacosUser       = "/nacos/v1/auth/users"         // 用户
 	NacosRoles      = "/nacos/v1/auth/roles"         // 角色
 	NacosPermission = "/nacos/v1/auth/permissions"   // 权限
