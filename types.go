@@ -26,6 +26,10 @@ type ListeningConfigs struct {
 
 type GetConfigHistoryRequest struct {
 	ConfigBase
+	Page
+}
+
+type Page struct {
 	PageNo   int `json:"pageNo" validate:"omitempty" default:"1"`
 	PageSize int `json:"pageSize" validate:"omitempty,max=500" default:"100"`
 }
@@ -106,4 +110,66 @@ type PutNamespaceRequest struct {
 
 type DeleteNamespaceRequest struct {
 	NamespaceId string `json:"namespaceId" validate:"required"` // 命名空间 ID
+}
+
+type User struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type GetUsersResponse struct {
+	TotalCount     int `json:"totalCount"`
+	PageNumber     int `json:"pageNumber"`
+	PagesAvailable int `json:"pagesAvailable"`
+	PageItems      []struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	} `json:"pageItems"`
+}
+
+type DeleteUserRequest struct {
+	Username string `json:"username" validate:"required"`
+}
+
+type GetRolesResponse struct {
+	TotalCount     int `json:"totalCount"`
+	PageNumber     int `json:"pageNumber"`
+	PagesAvailable int `json:"pagesAvailable"`
+	PageItems      []struct {
+		Role     string `json:"role"`
+		Username string `json:"username"`
+	} `json:"pageItems"`
+}
+
+type CreateRoleRequest struct {
+	Role     string `json:"role" validate:"required"`
+	Username string `json:"username" validate:"required"`
+}
+
+type DeleteRoleRequest struct {
+	Role     string `json:"role" validate:"required"`
+	Username string `json:"username" validate:"required"`
+}
+
+type GetPermissions struct {
+	TotalCount     int `json:"totalCount"`
+	PageNumber     int `json:"pageNumber"`
+	PagesAvailable int `json:"pagesAvailable"`
+	PageItems      []struct {
+		Role     string `json:"role"`
+		Resource string `json:"resource"`
+		Action   string `json:"action"`
+	} `json:"pageItems"`
+}
+
+type CreatePermissionRequest struct {
+	Role        string `json:"role" validate:"required"`
+	NamespaceId string `json:"namespaceId" validate:"required"`
+	Action      string `json:"action" validate:"required,oneof=r w rw"`
+}
+
+type DeletePermissionRequest struct {
+	Role     string `json:"role" validate:"required"`
+	Resource string `json:"resource" validate:"required"`
+	Action   string `json:"action" validate:"required,oneof=r w rw"`
 }
