@@ -97,7 +97,6 @@ func (c *Client) DeleteUser(req *DeleteUserRequest) error {
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client delete user failed: %s", resp)
 	}
-	fmt.Printf("resp: %v\n", resp)
 	return nil
 }
 
