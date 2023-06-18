@@ -55,7 +55,7 @@ func (c *Client) Login() error {
 			"password": c.Config.Password,
 		}).
 		SetResult(response).
-		Post(c.Config.Addr + NacosAuth)
+		Post(c.Config.Addr + IPathAuth)
 	if resp.StatusCode() != http.StatusOK || response == nil {
 		return fmt.Errorf("nacos auth failed: #%s", resp.Body())
 	}

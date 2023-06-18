@@ -16,13 +16,13 @@ func (c *Client) GetConfig(req *ConfigBase) (string, error) {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
 			},
 		).
-		Get(c.Config.Addr + NacosConfig)
+		Get(c.Config.Addr + IPathConfig)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return "", fmt.Errorf("nacos client get config failed: %s", resp)
@@ -43,13 +43,13 @@ func (c *Client) ListenConfig(req *ListeningConfigs) (string, error) {
 		SetHeader("Long-Pulling-Timeout", "30000").
 		SetFormData(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
 			},
 		).
-		Post(c.Config.Addr + NacosConfigListener)
+		Post(c.Config.Addr + IPathConfigListener)
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return "", fmt.Errorf("nacos client listen config failed: %s", resp)
 	}
@@ -66,15 +66,15 @@ func (c *Client) PublishConfig(req *PublishConfigRequest) error {
 	resp, err := c.Resty.R().
 		SetFormData(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
-				NacosContent:     req.Content,
-				NacosContentType: req.ContentType,
+				AccessToken:       c.Authentication.AccessToken,
+				ConfigDataId:      req.DataId,
+				Tenant:            req.Tenant,
+				ConfigGroup:       req.Group,
+				ConfigContent:     req.Content,
+				ConfigContentType: req.ContentType,
 			},
 		).
-		Post(c.Config.Addr + NacosConfig)
+		Post(c.Config.Addr + IPathConfig)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client publish config failed: %s", resp)
@@ -89,19 +89,19 @@ func (c *Client) DeleteConfig(req *ConfigBase) error {
 		return err
 	}
 	if req.Group == "" {
-		req.Group = NacosDefaultGroup
+		req.Group = DefaultGroup
 	}
 
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
 			},
 		).
-		Delete(c.Config.Addr + NacosConfig)
+		Delete(c.Config.Addr + IPathConfig)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client delete config failed: %s", resp)
@@ -119,16 +119,16 @@ func (c *Client) GetConfigHistory(req *GetConfigHistoryRequest) (*GetConfigHisto
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
-				PageNo:           strconv.Itoa(req.PageNo),
-				PageSize:         strconv.Itoa(req.PageSize),
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
+				PageNo:       strconv.Itoa(req.PageNo),
+				PageSize:     strconv.Itoa(req.PageSize),
 			},
 		).
 		SetResult(result).
-		Get(c.Config.Addr + NacosConfigHistory)
+		Get(c.Config.Addr + IPathConfigHistory)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get config history failed: %s", resp)
@@ -146,15 +146,15 @@ func (c *Client) GetConfigHistoryDetail(req *GetConfigHistoryDetailRequest) (*Ge
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
-				NacosNid:         req.Nid,
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
+				ConfigNid:    req.Nid,
 			},
 		).
 		SetResult(result).
-		Get(c.Config.Addr + NacosConfigHistoryDetail)
+		Get(c.Config.Addr + IPathConfigHistoryDetail)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get config history detail failed: %s", resp)
@@ -172,15 +172,15 @@ func (c *Client) GetConfigHistoryPrevious(req *GetConfigHistoryPreviousRequest) 
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosDataId:      req.DataId,
-				NacosTenant:      req.Tenant,
-				NacosGroup:       req.Group,
-				NacosId:          strconv.Itoa(req.Id),
+				AccessToken:  c.Authentication.AccessToken,
+				ConfigDataId: req.DataId,
+				Tenant:       req.Tenant,
+				ConfigGroup:  req.Group,
+				ConfigId:     strconv.Itoa(req.Id),
 			},
 		).
 		SetResult(result).
-		Get(c.Config.Addr + NacosConfigHistoryPrevious)
+		Get(c.Config.Addr + IPathConfigHistoryPrevious)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get config history previous failed: %s", resp)

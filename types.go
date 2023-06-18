@@ -173,3 +173,17 @@ type DeletePermissionRequest struct {
 	Resource string `json:"resource" validate:"required"`
 	Action   string `json:"action" validate:"required,oneof=r w rw"`
 }
+
+type RegisterInstanceRequest struct {
+	Ip          string `json:"ip" validate:"required"`
+	Port        int    `json:"port" validate:"required"`
+	NamespaceId string `json:"namespaceId" validate:"omitempty"`
+	Weight      int    `json:"weight" validate:"omitempty"`
+	Enable      bool   `json:"enable" validate:"omitempty"`
+	Healthy     bool   `json:"healthy" validate:"omitempty"`
+	Metadata    string `json:"metadata" validate:"omitempty"`
+	ClusterName string `json:"clusterName" validate:"omitempty"`
+	ServiceName string `json:"serviceName" validate:"required"`
+	GroupName   string `json:"groupName" validate:"omitempty"`
+	Ephemeral   bool   `json:"ephemeral" validate:"omitempty"`
+}

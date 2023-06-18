@@ -18,13 +18,13 @@ func (c *Client) GetUsers(req *Page) (*GetUsersResponse, error) {
 	result := &GetUsersResponse{}
 	resp, err := c.Resty.R().
 		SetQueryParams(map[string]string{
-			NacosAccessToken: c.Authentication.AccessToken,
-			NacosSearch:      NacosSearchType,
-			PageNo:           strconv.Itoa(req.PageNo),
-			PageSize:         strconv.Itoa(req.PageSize),
+			AccessToken: c.Authentication.AccessToken,
+			Search:      SearchType,
+			PageNo:      strconv.Itoa(req.PageNo),
+			PageSize:    strconv.Itoa(req.PageSize),
 		}).
 		SetResult(result).
-		Get(c.Config.Addr + NacosUser)
+		Get(c.Config.Addr + IPathUser)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get users failed: %s", resp)
@@ -42,12 +42,12 @@ func (c *Client) CreateUser(req *User) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosUsername:    req.Username,
-				NacosPassword:    req.Password,
+				AccessToken: c.Authentication.AccessToken,
+				Username:    req.Username,
+				Password:    req.Password,
 			},
 		).
-		Post(c.Config.Addr + NacosUser)
+		Post(c.Config.Addr + IPathUser)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client create user failed: %s", resp)
@@ -65,12 +65,12 @@ func (c *Client) PutUser(req *User) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosUsername:    req.Username,
-				NacosNewPassword: req.Password,
+				AccessToken: c.Authentication.AccessToken,
+				Username:    req.Username,
+				NewPassword: req.Password,
 			},
 		).
-		Put(c.Config.Addr + NacosUser)
+		Put(c.Config.Addr + IPathUser)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client put user failed: %s", resp)
@@ -88,11 +88,11 @@ func (c *Client) DeleteUser(req *DeleteUserRequest) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosUsername:    req.Username,
+				AccessToken: c.Authentication.AccessToken,
+				Username:    req.Username,
 			},
 		).
-		Delete(c.Config.Addr + NacosUser)
+		Delete(c.Config.Addr + IPathUser)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client delete user failed: %s", resp)
@@ -108,13 +108,13 @@ func (c *Client) GetRoles(req *Page) (*GetRolesResponse, error) {
 	result := &GetRolesResponse{}
 	resp, err := c.Resty.R().
 		SetQueryParams(map[string]string{
-			NacosAccessToken: c.Authentication.AccessToken,
-			NacosSearch:      NacosSearchType,
-			PageNo:           strconv.Itoa(req.PageNo),
-			PageSize:         strconv.Itoa(req.PageSize),
+			AccessToken: c.Authentication.AccessToken,
+			Search:      SearchType,
+			PageNo:      strconv.Itoa(req.PageNo),
+			PageSize:    strconv.Itoa(req.PageSize),
 		}).
 		SetResult(result).
-		Get(c.Config.Addr + NacosRoles)
+		Get(c.Config.Addr + IPathRoles)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get role list failed: %s", resp)
@@ -131,12 +131,12 @@ func (c *Client) CreateRoles(req *CreateRoleRequest) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosUsername:    req.Username,
-				NacosRole:        req.Role,
+				AccessToken: c.Authentication.AccessToken,
+				Username:    req.Username,
+				Role:        req.Role,
 			},
 		).
-		Post(c.Config.Addr + NacosRoles)
+		Post(c.Config.Addr + IPathRoles)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		if strings.Contains(resp.String(), "Duplicate entry") {
@@ -156,12 +156,12 @@ func (c *Client) DeleteRoles(req *DeleteRoleRequest) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosUsername:    req.Username,
-				NacosRole:        req.Role,
+				AccessToken: c.Authentication.AccessToken,
+				Username:    req.Username,
+				Role:        req.Role,
 			},
 		).
-		Delete(c.Config.Addr + NacosRoles)
+		Delete(c.Config.Addr + IPathRoles)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client delete role failed: %s", resp)
@@ -180,13 +180,13 @@ func (c *Client) GetPermissions(req *Page) (*GetPermissions, error) {
 	result := &GetPermissions{}
 	resp, err := c.Resty.R().
 		SetQueryParams(map[string]string{
-			NacosAccessToken: c.Authentication.AccessToken,
-			NacosSearch:      NacosSearchType,
-			PageNo:           strconv.Itoa(req.PageNo),
-			PageSize:         strconv.Itoa(req.PageSize),
+			AccessToken: c.Authentication.AccessToken,
+			Search:      SearchType,
+			PageNo:      strconv.Itoa(req.PageNo),
+			PageSize:    strconv.Itoa(req.PageSize),
 		}).
 		SetResult(result).
-		Get(c.Config.Addr + NacosPermission)
+		Get(c.Config.Addr + IPathPermission)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get users failed: %s", resp)
@@ -204,13 +204,13 @@ func (c *Client) CreatePermission(req *CreatePermissionRequest) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosRole:        req.Role,
-				NacosResource:    req.NamespaceId + NacosCreatePermissionResource,
-				NacosAction:      req.Action,
+				AccessToken:      c.Authentication.AccessToken,
+				Role:             req.Role,
+				Resource:         req.NamespaceId + PermissionSuffix,
+				PermissionAction: req.Action,
 			},
 		).
-		Post(c.Config.Addr + NacosPermission)
+		Post(c.Config.Addr + IPathPermission)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		if strings.Contains(resp.String(), "Duplicate entry") {
@@ -230,13 +230,13 @@ func (c *Client) DeletePermission(req *DeletePermissionRequest) error {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosRole:        req.Role,
-				NacosResource:    req.Resource,
-				NacosAction:      req.Action,
+				AccessToken:      c.Authentication.AccessToken,
+				Role:             req.Role,
+				Resource:         req.Resource,
+				PermissionAction: req.Action,
 			},
 		).
-		Delete(c.Config.Addr + NacosPermission)
+		Delete(c.Config.Addr + IPathPermission)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return fmt.Errorf("nacos client delete role failed: %s", resp)

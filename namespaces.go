@@ -13,9 +13,9 @@ func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
 	}
 	result := &GetNamespacesResponse{}
 	resp, err := c.Resty.R().
-		SetQueryParam(NacosAccessToken, c.Authentication.AccessToken).
+		SetQueryParam(AccessToken, c.Authentication.AccessToken).
 		SetResult(result).
-		Get(c.Config.Addr + NacosNamespaces)
+		Get(c.Config.Addr + IPathNamespaces)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("nacos client get namespaces failed: %s", resp)
@@ -33,13 +33,13 @@ func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken:       c.Authentication.AccessToken,
-				NacosCustomNamespaceId: req.CustomNamespaceId,
-				NacosNamespaceName:     req.NamespaceName,
-				NacosNamespaceDesc:     req.NamespaceDesc,
+				AccessToken:                 c.Authentication.AccessToken,
+				PermissionCustomNamespaceId: req.CustomNamespaceId,
+				PermissionNamespaceName:     req.NamespaceName,
+				PermissionNamespaceDesc:     req.NamespaceDesc,
 			},
 		).
-		Post(c.Config.Addr + NacosNamespaces)
+		Post(c.Config.Addr + IPathNamespaces)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return false, fmt.Errorf("nacos client create namespace failed: %s", resp)
@@ -57,13 +57,13 @@ func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken:       c.Authentication.AccessToken,
-				NacosNameSpace:         req.Namespace,
-				NacosNamespaceShowName: req.NamespaceShowName,
-				NacosNamespaceDesc:     req.NamespaceDesc,
+				AccessToken:                 c.Authentication.AccessToken,
+				NameSpace:                   req.Namespace,
+				PermissionNamespaceShowName: req.NamespaceShowName,
+				PermissionNamespaceDesc:     req.NamespaceDesc,
 			},
 		).
-		Put(c.Config.Addr + NacosNamespaces)
+		Put(c.Config.Addr + IPathNamespaces)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return false, fmt.Errorf("nacos client put namespace failed: %s", resp)
@@ -81,11 +81,11 @@ func (c *Client) DeleteNamespace(req *DeleteNamespaceRequest) (bool, error) {
 	resp, err := c.Resty.R().
 		SetQueryParams(
 			map[string]string{
-				NacosAccessToken: c.Authentication.AccessToken,
-				NacosNamespaceId: req.NamespaceId,
+				AccessToken:           c.Authentication.AccessToken,
+				PermissionNamespaceId: req.NamespaceId,
 			},
 		).
-		Delete(c.Config.Addr + NacosNamespaces)
+		Delete(c.Config.Addr + IPathNamespaces)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
 		return false, fmt.Errorf("nacos client delete namespace failed: %s", resp)
