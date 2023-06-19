@@ -3,7 +3,7 @@ package client
 const (
 	// NACOS
 
-	Scheme     = "http"
+	Scheme     = "client"
 	WebContext = "/"
 
 	// NacosDefaultAuthTokenExpireSeconds = 18000
@@ -31,6 +31,7 @@ const (
 	ServiceName        = "serviceName" // 服务名称, string
 	ServiceGroupName   = "groupName"   // 分组名称, string
 	ServiceEphemeral   = "ephemeral"   // 是否临时实例, bool
+	ServiceClusters    = "clusters"    // 集群名称, string,多个集群用逗号分隔
 
 	// NacosNaming
 

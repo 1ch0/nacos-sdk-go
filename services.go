@@ -10,32 +10,78 @@ import (
 
 // RegisterInstance 注册实例
 func (c *Client) RegisterInstance(req *RegisterInstanceRequest) error {
-	err := c.Check(req)
-	if err != nil {
-		return err
-	}
+	return c.Execute(
+		http.MethodPost,
+		req,
+		c.Config.Addr+IPathInstance,
+		&struct{}{},
+		map[string]string{
+			ServiceIP:          req.IP,
+			ServicePort:        strconv.Itoa(req.Port),
+			ServiceNamespaceId: req.NamespaceId,
+			ServiceWeight:      fmt.Sprintf("%f", req.Weight),
+			ServiceEnable:      strconv.FormatBool(req.Enable),
+			ServiceHealthy:     strconv.FormatBool(req.Healthy),
+			ServiceMetadata:    req.Metadata,
+			ServiceClusterName: req.ClusterName,
+			ServiceName:        req.ServiceName,
+			ServiceGroupName:   req.GroupName,
+			ServiceEphemeral:   strconv.FormatBool(req.Ephemeral),
+		})
+}
 
-	resp, err := c.Resty.R().
-		SetQueryParams(
-			map[string]string{
-				AccessToken:        c.Authentication.AccessToken,
-				ServiceIP:          req.Ip,
-				ServicePort:        strconv.Itoa(req.Port),
-				ServiceNamespaceId: req.NamespaceId,
-				ServiceWeight:      strconv.Itoa(req.Weight),
-				ServiceEnable:      strconv.FormatBool(req.Enable),
-				ServiceHealthy:     strconv.FormatBool(req.Healthy),
-				ServiceMetadata:    req.Metadata,
-				ServiceClusterName: req.ClusterName,
-				ServiceName:        req.ServiceName,
-				ServiceGroupName:   req.GroupName,
-				ServiceEphemeral:   strconv.FormatBool(req.Ephemeral),
-			},
-		).
-		Post(c.Config.Addr + IPathInstance)
+// DeregisterInstance 注销实例
+func (c *Client) DeregisterInstance(req *DeregisterInstanceRequest) error {
+	return c.Execute(
+		http.MethodDelete,
+		req,
+		c.Config.Addr+IPathInstance,
+		&struct{}{},
+		map[string]string{
+			ServiceIP:          req.IP,
+			ServicePort:        strconv.Itoa(req.Port),
+			ServiceNamespaceId: req.NamespaceId,
+			ServiceClusterName: req.ClusterName,
+			ServiceName:        req.ServiceName,
+			ServiceGroupName:   req.GroupName,
+			ServiceEphemeral:   strconv.FormatBool(req.Ephemeral),
+		})
+}
 
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return fmt.Errorf("nacos client register instance failed: %s", resp)
-	}
-	return nil
+// ModifyInstance 修改实例
+func (c *Client) ModifyInstance(req *ModifyInstanceRequest) error {
+	return c.Execute(
+		http.MethodPut,
+		req,
+		c.Config.Addr+IPathInstance,
+		&struct{}{},
+		map[string]string{
+			ServiceIP:          req.IP,
+			ServicePort:        strconv.Itoa(req.Port),
+			ServiceNamespaceId: req.NamespaceId,
+			ServiceWeight:      fmt.Sprintf("%f", req.Weight),
+			ServiceEnable:      strconv.FormatBool(req.Enable),
+			ServiceHealthy:     strconv.FormatBool(req.Healthy),
+			ServiceMetadata:    req.Metadata,
+			ServiceClusterName: req.ClusterName,
+			ServiceName:        req.ServiceName,
+			ServiceGroupName:   req.GroupName,
+			ServiceEphemeral:   strconv.FormatBool(req.Ephemeral),
+		})
+}
+
+// GetInstances 查询实例列表
+func (c *Client) GetInstances(req *GetInstancesRequest) (*GetInstancesResponse, error) {
+	result := &GetInstancesResponse{}
+	return result, c.Execute(
+		http.MethodGet,
+		req,
+		c.Config.Addr+IPathInstanceList,
+		result,
+		map[string]string{
+			ServiceNamespaceId: req.NamespaceId,
+			ServiceName:        req.ServiceName,
+			ServiceGroupName:   req.GroupName,
+			ServiceClusters:    req.Clusters,
+		})
 }

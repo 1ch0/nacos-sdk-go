@@ -16,7 +16,7 @@ func (c *Client) GetUsers(req *Page) (*GetUsersResponse, error) {
 		return nil, err
 	}
 	result := &GetUsersResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(map[string]string{
 			AccessToken: c.Authentication.AccessToken,
 			Search:      SearchType,
@@ -39,7 +39,7 @@ func (c *Client) CreateUser(req *User) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken: c.Authentication.AccessToken,
@@ -62,7 +62,7 @@ func (c *Client) PutUser(req *User) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken: c.Authentication.AccessToken,
@@ -85,7 +85,7 @@ func (c *Client) DeleteUser(req *DeleteUserRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken: c.Authentication.AccessToken,
@@ -106,7 +106,7 @@ func (c *Client) GetRoles(req *Page) (*GetRolesResponse, error) {
 		return nil, err
 	}
 	result := &GetRolesResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(map[string]string{
 			AccessToken: c.Authentication.AccessToken,
 			Search:      SearchType,
@@ -128,7 +128,7 @@ func (c *Client) CreateRoles(req *CreateRoleRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken: c.Authentication.AccessToken,
@@ -153,7 +153,7 @@ func (c *Client) DeleteRoles(req *DeleteRoleRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken: c.Authentication.AccessToken,
@@ -178,7 +178,7 @@ func (c *Client) GetPermissions(req *Page) (*GetPermissions, error) {
 		return nil, err
 	}
 	result := &GetPermissions{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(map[string]string{
 			AccessToken: c.Authentication.AccessToken,
 			Search:      SearchType,
@@ -201,7 +201,7 @@ func (c *Client) CreatePermission(req *CreatePermissionRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:      c.Authentication.AccessToken,
@@ -227,7 +227,7 @@ func (c *Client) DeletePermission(req *DeletePermissionRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:      c.Authentication.AccessToken,

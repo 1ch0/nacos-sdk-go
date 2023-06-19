@@ -175,15 +175,76 @@ type DeletePermissionRequest struct {
 }
 
 type RegisterInstanceRequest struct {
-	Ip          string `json:"ip" validate:"required"`
+	IP          string  `json:"ip" validate:"required"`
+	Port        int     `json:"port" validate:"required"`
+	NamespaceId string  `json:"namespaceId" validate:"omitempty"`
+	Weight      float64 `json:"weight" validate:"omitempty"`
+	Enable      bool    `json:"enable" validate:"omitempty"`
+	Healthy     bool    `json:"healthy" validate:"omitempty"`
+	Metadata    string  `json:"metadata" validate:"omitempty"`
+	ClusterName string  `json:"clusterName" validate:"omitempty"`
+	ServiceName string  `json:"serviceName" validate:"required"`
+	GroupName   string  `json:"groupName" validate:"omitempty"`
+	Ephemeral   bool    `json:"ephemeral" validate:"omitempty"`
+}
+
+type DeregisterInstanceRequest struct {
+	IP          string `json:"ip" validate:"required"`
 	Port        int    `json:"port" validate:"required"`
 	NamespaceId string `json:"namespaceId" validate:"omitempty"`
-	Weight      int    `json:"weight" validate:"omitempty"`
-	Enable      bool   `json:"enable" validate:"omitempty"`
-	Healthy     bool   `json:"healthy" validate:"omitempty"`
-	Metadata    string `json:"metadata" validate:"omitempty"`
 	ClusterName string `json:"clusterName" validate:"omitempty"`
 	ServiceName string `json:"serviceName" validate:"required"`
 	GroupName   string `json:"groupName" validate:"omitempty"`
 	Ephemeral   bool   `json:"ephemeral" validate:"omitempty"`
+}
+
+type ModifyInstanceRequest struct {
+	IP          string  `json:"ip" validate:"required"`
+	Port        int     `json:"port" validate:"required"`
+	NamespaceId string  `json:"namespaceId" validate:"omitempty"`
+	Weight      float64 `json:"weight" validate:"omitempty"`
+	Enable      bool    `json:"enable" validate:"omitempty"`
+	Healthy     bool    `json:"healthy" validate:"omitempty"`
+	Metadata    string  `json:"metadata" validate:"omitempty"`
+	ClusterName string  `json:"clusterName" validate:"omitempty"`
+	ServiceName string  `json:"serviceName" validate:"required"`
+	GroupName   string  `json:"groupName" validate:"omitempty"`
+	Ephemeral   bool    `json:"ephemeral" validate:"omitempty"`
+}
+
+type GetInstancesRequest struct {
+	ServiceName string `json:"serviceName" validate:"required"`
+	GroupName   string `json:"groupName" validate:"omitempty"`
+	NamespaceId string `json:"namespaceId" validate:"omitempty"`
+	Clusters    string `json:"clusters" validate:"omitempty"`
+	HealthyOnly bool   `json:"healthyOnly" validate:"omitempty"`
+}
+
+type GetInstancesResponse struct {
+	Name        string `json:"name"`
+	GroupName   string `json:"groupName"`
+	Clusters    string `json:"clusters"`
+	CacheMillis int    `json:"cacheMillis"`
+	Hosts       []struct {
+		InstanceId  string  `json:"instanceId"`
+		Ip          string  `json:"ip"`
+		Port        int     `json:"port"`
+		Weight      float64 `json:"weight"`
+		Healthy     bool    `json:"healthy"`
+		Enabled     bool    `json:"enabled"`
+		Ephemeral   bool    `json:"ephemeral"`
+		ClusterName string  `json:"clusterName"`
+		ServiceName string  `json:"serviceName"`
+		Metadata    struct {
+		} `json:"metadata"`
+		InstanceHeartBeatInterval int    `json:"instanceHeartBeatInterval"`
+		InstanceIdGenerator       string `json:"instanceIdGenerator"`
+		InstanceHeartBeatTimeOut  int    `json:"instanceHeartBeatTimeOut"`
+		IpDeleteTimeout           int    `json:"ipDeleteTimeout"`
+	} `json:"hosts"`
+	LastRefTime              int64  `json:"lastRefTime"`
+	Checksum                 string `json:"checksum"`
+	AllIPs                   bool   `json:"allIPs"`
+	ReachProtectionThreshold bool   `json:"reachProtectionThreshold"`
+	Valid                    bool   `json:"valid"`
 }

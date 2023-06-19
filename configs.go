@@ -13,7 +13,7 @@ func (c *Client) GetConfig(req *ConfigBase) (string, error) {
 		return "", err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:  c.Authentication.AccessToken,
@@ -38,7 +38,7 @@ func (c *Client) ListenConfig(req *ListeningConfigs) (string, error) {
 	}
 
 	// 发送长连接请求
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetDoNotParseResponse(true).
 		SetHeader("Long-Pulling-Timeout", "30000").
 		SetFormData(
@@ -63,7 +63,7 @@ func (c *Client) PublishConfig(req *PublishConfigRequest) error {
 		return err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetFormData(
 			map[string]string{
 				AccessToken:       c.Authentication.AccessToken,
@@ -92,7 +92,7 @@ func (c *Client) DeleteConfig(req *ConfigBase) error {
 		req.Group = DefaultGroup
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:  c.Authentication.AccessToken,
@@ -116,7 +116,7 @@ func (c *Client) GetConfigHistory(req *GetConfigHistoryRequest) (*GetConfigHisto
 		return nil, err
 	}
 	result := &GetConfigHistoryResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:  c.Authentication.AccessToken,
@@ -143,7 +143,7 @@ func (c *Client) GetConfigHistoryDetail(req *GetConfigHistoryDetailRequest) (*Ge
 		return nil, err
 	}
 	result := &GetConfigHistoryDetailResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:  c.Authentication.AccessToken,
@@ -169,7 +169,7 @@ func (c *Client) GetConfigHistoryPrevious(req *GetConfigHistoryPreviousRequest) 
 		return nil, err
 	}
 	result := &GetConfigHistoryDetailResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:  c.Authentication.AccessToken,

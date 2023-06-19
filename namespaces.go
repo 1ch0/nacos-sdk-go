@@ -12,7 +12,7 @@ func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
 		return nil, err
 	}
 	result := &GetNamespacesResponse{}
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParam(AccessToken, c.Authentication.AccessToken).
 		SetResult(result).
 		Get(c.Config.Addr + IPathNamespaces)
@@ -30,7 +30,7 @@ func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
 		return false, err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:                 c.Authentication.AccessToken,
@@ -54,7 +54,7 @@ func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
 		return false, err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:                 c.Authentication.AccessToken,
@@ -78,7 +78,7 @@ func (c *Client) DeleteNamespace(req *DeleteNamespaceRequest) (bool, error) {
 		return false, err
 	}
 
-	resp, err := c.Resty.R().
+	resp, err := c.client.R().
 		SetQueryParams(
 			map[string]string{
 				AccessToken:           c.Authentication.AccessToken,
