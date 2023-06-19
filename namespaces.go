@@ -1,94 +1,59 @@
 package client
 
 import (
-	"fmt"
 	"net/http"
 )
 
 // GetNamespaces 查询命名空间列表
 func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
-	err := c.Check(&struct{}{})
-	if err != nil {
-		return nil, err
-	}
 	result := &GetNamespacesResponse{}
-	resp, err := c.client.R().
-		SetQueryParam(AccessToken, c.Authentication.AccessToken).
-		SetResult(result).
-		Get(c.Config.Addr + IPathNamespaces)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return nil, fmt.Errorf("nacos client get namespaces failed: %s", resp)
-	}
-	return result, nil
+	return result, c.Execute(
+		http.MethodGet,
+		&struct{}{},
+		IPathNamespaces,
+		result,
+		map[string]string{})
 }
 
 // CreateNamespace 创建命名空间
 func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
-	err := c.Check(req)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.client.R().
-		SetQueryParams(
-			map[string]string{
-				AccessToken:                 c.Authentication.AccessToken,
-				PermissionCustomNamespaceId: req.CustomNamespaceId,
-				PermissionNamespaceName:     req.NamespaceName,
-				PermissionNamespaceDesc:     req.NamespaceDesc,
-			},
-		).
-		Post(c.Config.Addr + IPathNamespaces)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return false, fmt.Errorf("nacos client create namespace failed: %s", resp)
-	}
-	return true, nil
+	success := &BoolResult
+	return *success, c.Execute(
+		http.MethodPost,
+		req,
+		IPathNamespaces,
+		success,
+		map[string]string{
+			PermissionCustomNamespaceId: req.CustomNamespaceId,
+			PermissionNamespaceName:     req.NamespaceName,
+			PermissionNamespaceDesc:     req.NamespaceDesc,
+		})
 }
 
 // PutNamespace 修改命名空间
 func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
-	err := c.Check(req)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.client.R().
-		SetQueryParams(
-			map[string]string{
-				AccessToken:                 c.Authentication.AccessToken,
-				NameSpace:                   req.Namespace,
-				PermissionNamespaceShowName: req.NamespaceShowName,
-				PermissionNamespaceDesc:     req.NamespaceDesc,
-			},
-		).
-		Put(c.Config.Addr + IPathNamespaces)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return false, fmt.Errorf("nacos client put namespace failed: %s", resp)
-	}
-	return true, nil
+	success := &BoolResult
+	return *success, c.Execute(
+		http.MethodPut,
+		req,
+		IPathNamespaces,
+		&struct{}{},
+		map[string]string{
+			NameSpace:                   req.Namespace,
+			PermissionNamespaceShowName: req.NamespaceShowName,
+			PermissionNamespaceDesc:     req.NamespaceDesc,
+		})
 }
 
 // DeleteNamespace 删除命名空间
 func (c *Client) DeleteNamespace(req *DeleteNamespaceRequest) (bool, error) {
-	err := c.Check(req)
-	if err != nil {
-		return false, err
-	}
-
-	resp, err := c.client.R().
-		SetQueryParams(
-			map[string]string{
-				AccessToken:           c.Authentication.AccessToken,
-				PermissionNamespaceId: req.NamespaceId,
-			},
-		).
-		Delete(c.Config.Addr + IPathNamespaces)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return false, fmt.Errorf("nacos client delete namespace failed: %s", resp)
-	}
-	return true, nil
+	success := &BoolResult
+	return *success, c.Execute(
+		http.MethodDelete,
+		req,
+		IPathNamespaces,
+		&struct{}{},
+		map[string]string{
+			PermissionNamespaceId: req.NamespaceId,
+		})
 }

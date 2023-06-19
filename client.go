@@ -2,12 +2,11 @@ package client
 
 import (
 	"fmt"
+	"github.com/mcuadros/go-defaults"
 	"net/http"
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/mcuadros/go-defaults"
-
 	"github.com/go-resty/resty/v2"
 )
 
@@ -92,7 +91,7 @@ func (c *Client) Check(req interface{}) error {
 	return nil
 }
 
-func (c *Client) Execute(method string, req interface{}, target string, result interface{}, queryParams map[string]string) error {
+func (c *Client) Execute(method string, req interface{}, path string, result interface{}, queryParams map[string]string) error {
 	if !validMethod(method) {
 		return fmt.Errorf("invalid method: %s", method)
 	}
@@ -103,10 +102,10 @@ func (c *Client) Execute(method string, req interface{}, target string, result i
 
 	resp, err := c.client.R().
 		SetQueryParam(AccessToken, c.Authentication.AccessToken).
-		SetQueryParams(queryParams).SetResult(result).Execute(method, target)
+		SetQueryParams(queryParams).SetResult(result).Execute(method, c.Config.Addr+path)
 
 	if err != nil || resp.StatusCode() != http.StatusOK {
-		return fmt.Errorf("error! %s %s  %s", method, target, resp)
+		return fmt.Errorf("error!  %s %s %s", method, path, resp)
 	}
 
 	return nil

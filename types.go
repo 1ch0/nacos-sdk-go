@@ -6,6 +6,10 @@ type ConfigBase struct {
 	Tenant string `json:"tenant" validate:"omitempty" default:"public"`
 }
 
+var StringResult string
+
+var BoolResult bool
+
 type LoginResponse struct {
 	AccessToken string `json:"accessToken"`
 	TokenTtl    int    `json:"tokenTtl"`
@@ -31,7 +35,7 @@ type GetConfigHistoryRequest struct {
 
 type Page struct {
 	PageNo   int `json:"pageNo" validate:"omitempty" default:"1"`
-	PageSize int `json:"pageSize" validate:"omitempty,max=500" default:"100"`
+	PageSize int `json:"pageSize" validate:"omitempty,max=500" default:"500"`
 }
 
 type GetConfigHistoryResponse struct {

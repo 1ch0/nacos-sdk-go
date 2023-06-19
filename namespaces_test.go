@@ -12,7 +12,7 @@ func TestClient_GetNamespaces(t *testing.T) {
 
 func TestClient_CreateNamespace(t *testing.T) {
 	resp, err := client.CreateNamespace(&CreateNamespaceRequest{
-		CustomNamespaceId: "test1",
+		CustomNamespaceId: "dev1",
 		NamespaceName:     "test",
 		NamespaceDesc:     "test",
 	})

@@ -13,7 +13,7 @@ func (c *Client) RegisterInstance(req *RegisterInstanceRequest) error {
 	return c.Execute(
 		http.MethodPost,
 		req,
-		c.Config.Addr+IPathInstance,
+		IPathInstance,
 		&struct{}{},
 		map[string]string{
 			ServiceIP:          req.IP,
@@ -35,7 +35,7 @@ func (c *Client) DeregisterInstance(req *DeregisterInstanceRequest) error {
 	return c.Execute(
 		http.MethodDelete,
 		req,
-		c.Config.Addr+IPathInstance,
+		IPathInstance,
 		&struct{}{},
 		map[string]string{
 			ServiceIP:          req.IP,
@@ -53,7 +53,7 @@ func (c *Client) ModifyInstance(req *ModifyInstanceRequest) error {
 	return c.Execute(
 		http.MethodPut,
 		req,
-		c.Config.Addr+IPathInstance,
+		IPathInstance,
 		&struct{}{},
 		map[string]string{
 			ServiceIP:          req.IP,
@@ -76,7 +76,7 @@ func (c *Client) GetInstances(req *GetInstancesRequest) (*GetInstancesResponse, 
 	return result, c.Execute(
 		http.MethodGet,
 		req,
-		c.Config.Addr+IPathInstanceList,
+		IPathInstanceList,
 		result,
 		map[string]string{
 			ServiceNamespaceId: req.NamespaceId,
