@@ -17,12 +17,12 @@ func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
 
 // CreateNamespace 创建命名空间
 func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
-	success := &BoolResult
-	return *success, c.Execute(
+	result := &BoolResult
+	return *result, c.Execute(
 		http.MethodPost,
 		req,
 		IPathNamespaces,
-		success,
+		result,
 		map[string]string{
 			PermissionCustomNamespaceId: req.CustomNamespaceId,
 			PermissionNamespaceName:     req.NamespaceName,
@@ -32,12 +32,12 @@ func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
 
 // PutNamespace 修改命名空间
 func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
-	success := &BoolResult
-	return *success, c.Execute(
+	result := &BoolResult
+	return *result, c.Execute(
 		http.MethodPut,
 		req,
 		IPathNamespaces,
-		&struct{}{},
+		result,
 		map[string]string{
 			NameSpace:                   req.Namespace,
 			PermissionNamespaceShowName: req.NamespaceShowName,
@@ -47,12 +47,12 @@ func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
 
 // DeleteNamespace 删除命名空间
 func (c *Client) DeleteNamespace(req *DeleteNamespaceRequest) (bool, error) {
-	success := &BoolResult
-	return *success, c.Execute(
+	result := &BoolResult
+	return *result, c.Execute(
 		http.MethodDelete,
 		req,
 		IPathNamespaces,
-		&struct{}{},
+		result,
 		map[string]string{
 			PermissionNamespaceId: req.NamespaceId,
 		})

@@ -20,18 +20,24 @@ const (
 
 	// Nacos services management request params
 
-	ServiceIP          = "ip"          // 服务IP, string
-	ServicePort        = "port"        // 服务端口, int
-	ServiceNamespaceId = "namespaceId" // 命名空间ID, string
-	ServiceWeight      = "weight"      // 权重, double
-	ServiceEnable      = "enable"      // 是否上线, bool
-	ServiceHealthy     = "healthy"     // 是否只健康, bool
-	ServiceMetadata    = "metadata"    // 元数据, string
-	ServiceClusterName = "clusterName" // 集群名称, string
-	ServiceName        = "serviceName" // 服务名称, string
-	ServiceGroupName   = "groupName"   // 分组名称, string
-	ServiceEphemeral   = "ephemeral"   // 是否临时实例, bool
-	ServiceClusters    = "clusters"    // 集群名称, string,多个集群用逗号分隔
+	ServiceIP               = "ip"               // 服务IP, string
+	ServicePort             = "port"             // 服务端口, int
+	ServiceNamespaceId      = "namespaceId"      // 命名空间ID, string
+	ServiceWeight           = "weight"           // 权重, double
+	ServiceEnable           = "enable"           // 是否上线, bool
+	ServiceHealthy          = "healthy"          // 是否只健康, bool
+	ServiceMetadata         = "metadata"         // 元数据, string
+	ServiceClusterName      = "clusterName"      // 集群名称, string
+	ServiceName             = "serviceName"      // 服务名称, string
+	ServiceGroupName        = "groupName"        // 分组名称, string
+	ServiceEphemeral        = "ephemeral"        // 是否临时实例, bool
+	ServiceClusters         = "clusters"         // 集群名称, string,多个集群用逗号分隔
+	ServiceProtectThreshold = "protectThreshold" // 保护阈值, float64
+	ServiceSelector         = "selector"         // 选择器, 服务访问策略
+
+	OperatorEntry = "entry" // 开关名
+	OperatorValue = "value" // 开关值
+	OperatorDebug = "debug" // 开关值
 
 	// NacosNaming
 
@@ -87,9 +93,9 @@ const (
 	IPathInstanceBeat    = "/nacos/v1/ns/instance/beat"     //发送实例心跳
 	IPathService         = "/nacos/v1/ns/service"           //创建服务,查询服务,修改服务,删除服务
 	IPathServiceList     = "/nacos/v1/ns/service/list"      //查询服务列表
-	IPathSwitchGet       = "/nacos/v1/ns/operator/switches" //查询系统开关,修改系统开关
-	IPathMetrics         = "/nacos/v1/ns/operator/metrics"  //查看系统当前数据指标
+	IPathOperatorSwitch  = "/nacos/v1/ns/operator/switches" //查询系统开关,修改系统开关
+	IPathOperatorMetrics = "/nacos/v1/ns/operator/metrics"  //查看系统当前数据指标
 	IPathOperatorServers = "/nacos/v1/ns/operator/servers"  //查看集群server列表
-	IPathLeader          = "/nacos/v1/ns/raft/leader"       //查看集群leader
+	IPathOperatorLeader  = "/nacos/v1/ns/raft/leader"       //查看集群leader
 	IPathInstanceHealth  = "/nacos/v1/ns/health/instance"   //更新实例健康状态
 )

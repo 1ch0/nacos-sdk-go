@@ -2,9 +2,10 @@ package client
 
 import (
 	"fmt"
-	"github.com/mcuadros/go-defaults"
 	"net/http"
 	"time"
+
+	"github.com/mcuadros/go-defaults"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
@@ -111,11 +112,44 @@ func (c *Client) Execute(method string, req interface{}, path string, result int
 	return nil
 }
 
-func validMethod(method string) bool {
-	switch method {
-	case http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodConnect, http.MethodOptions, http.MethodTrace:
-		return true
-	default:
-		return false
+func (c *Client) Do(params *DoParams) error {
+	if !validMethod(params.Method) {
+		return fmt.Errorf("invalid method: %s", params.Method)
 	}
+	err := c.Check(params.Req)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.client.R().
+		SetQueryParam(AccessToken, c.Authentication.AccessToken).
+		SetQueryParams(params.QueryParams).SetResult(params.Result).Execute(params.Method, c.Config.Addr+params.Path)
+
+	if err != nil || resp.StatusCode() != http.StatusOK {
+		return fmt.Errorf("error!  %s %s %s", params.Method, params.Path, resp)
+	}
+
+	return nil
+}
+
+func (c *Client) CheckDoParams(params *DoParams) error {
+	if !validMethod(params.Method) {
+		return fmt.Errorf("invalid method: %s", params.Method)
+	}
+	if err := c.checkAuth(); err != nil {
+		return err
+	}
+	defaults.SetDefaults(params.Req)
+	validate := validator.New()
+	if err := validate.Struct(params.Req); err != nil {
+		return err
+	}
+
+	// TODO check params.Result
+	for k, v := range params.QueryParams {
+		if v == "" {
+			return fmt.Errorf("invalid query param: %s", k)
+		}
+	}
+	return nil
 }

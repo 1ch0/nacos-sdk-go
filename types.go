@@ -10,6 +10,14 @@ var StringResult string
 
 var BoolResult bool
 
+type DoParams struct {
+	Method      string
+	Req         interface{}
+	Path        string
+	Result      interface{}
+	QueryParams map[string]string
+}
+
 type LoginResponse struct {
 	AccessToken string `json:"accessToken"`
 	TokenTtl    int    `json:"tokenTtl"`
@@ -178,6 +186,16 @@ type DeletePermissionRequest struct {
 	Action   string `json:"action" validate:"required,oneof=r w rw"`
 }
 
+type InstanceBase struct {
+	IP          string `json:"ip" validate:"required"`           // 实例 IP
+	Port        int    `json:"port" validate:"required"`         // 实例端口
+	NamespaceId string `json:"namespaceId" validate:"omitempty"` // 命名空间 ID
+	ClusterName string `json:"clusterName" validate:"omitempty"` // 集群名称
+	ServiceName string `json:"serviceName" validate:"required"`  // 服务名称
+	GroupName   string `json:"groupName" validate:"omitempty"`   // 分组名称
+	Ephemeral   bool   `json:"ephemeral" validate:"omitempty"`   // 是否临时实例
+}
+
 type RegisterInstanceRequest struct {
 	IP          string  `json:"ip" validate:"required"`
 	Port        int     `json:"port" validate:"required"`
@@ -251,4 +269,201 @@ type GetInstancesResponse struct {
 	AllIPs                   bool   `json:"allIPs"`
 	ReachProtectionThreshold bool   `json:"reachProtectionThreshold"`
 	Valid                    bool   `json:"valid"`
+}
+
+type GetInstanceRequest struct {
+	InstanceBase
+	Healthy bool `json:"healthy" validate:"omitempty"`
+}
+
+type GetInstanceResponse struct {
+	Metadata struct {
+	} `json:"metadata"`
+	InstanceId  string  `json:"instanceId"`
+	Port        int     `json:"port"`
+	Service     string  `json:"service"`
+	Healthy     bool    `json:"healthy"`
+	Ip          string  `json:"ip"`
+	ClusterName string  `json:"clusterName"`
+	Weight      float64 `json:"weight"`
+}
+
+type SendHeartbeatRequest struct {
+	InstanceBase
+	HeartBeat HeartBeat `json:"beat" validate:"required"`
+}
+
+type HeartBeat struct {
+	Cluster  string `json:"cluster"`
+	Ip       string `json:"ip"`
+	Metadata struct {
+	} `json:"metadata" validate:"omitempty"`
+	Port        int    `json:"port"`
+	Scheduled   bool   `json:"scheduled"`
+	ServiceName string `json:"serviceName"`
+	Weight      int    `json:"weight"`
+}
+
+type ServiceBase struct {
+	ServiceName string `json:"serviceName" validate:"required"`  // 服务名称
+	GroupName   string `json:"groupName" validate:"omitempty"`   // 分组名称
+	NamespaceId string `json:"namespaceId" validate:"omitempty"` // 命名空间 ID
+}
+
+type ServiceBaseResponse struct {
+	Metadata struct {
+	} `json:"metadata"`
+	GroupName   string `json:"groupName"`
+	NamespaceId string `json:"namespaceId"`
+	Name        string `json:"name"`
+	Selector    struct {
+		Type string `json:"type"`
+	} `json:"selector"`
+	ProtectThreshold int `json:"protectThreshold"`
+	Clusters         []struct {
+		HealthChecker struct {
+			Type string `json:"type"`
+		} `json:"healthChecker"`
+		Metadata struct {
+		} `json:"metadata"`
+		Name string `json:"name"`
+	} `json:"clusters"`
+}
+
+type CreateServiceRequest struct {
+	ServiceBase
+	ProtectThreshold float64               `json:"protectThreshold" validate:"omitempty,gte=0,lte=1" default:"0"` // 保护阈值,取值0到1,默认0
+	Metadata         string                `json:"metadata" validate:"omitempty"`                                 // 元数据
+	Selector         CreateServiceSelector `json:"selector" validate:"omitempty"`                                 // 访问策略
+}
+
+// CreateServiceSelector 服务访问策略
+type CreateServiceSelector struct {
+	Default bool `json:"default"`
+}
+
+type DeleteServiceRequest struct {
+	ServiceBase
+}
+
+type ModifyServiceRequest struct {
+	ServiceBase
+	ProtectThreshold float64               `json:"protectThreshold" validate:"omitempty,gte=0,lte=1" default:"0"` // 保护阈值,取值0到1,默认0
+	Metadata         string                `json:"metadata" validate:"omitempty"`                                 // 元数据
+	Selector         CreateServiceSelector `json:"selector" validate:"omitempty"`
+}
+
+type GetServiceListRequest struct {
+	Page
+	GroupName   string `json:"groupName" validate:"omitempty"`   // 分组名称
+	NamespaceId string `json:"namespaceId" validate:"omitempty"` // 命名空间 ID
+}
+
+type GetServiceListResponse struct {
+	Count int      `json:"count"`
+	Doms  []string `json:"doms"`
+}
+
+type GetOperatorSwitchResponse struct {
+	Name        string      `json:"name"`
+	Masters     interface{} `json:"masters"`
+	AdWeightMap struct {
+	} `json:"adWeightMap"`
+	DefaultPushCacheMillis int     `json:"defaultPushCacheMillis"`
+	ClientBeatInterval     int     `json:"clientBeatInterval"`
+	DefaultCacheMillis     int     `json:"defaultCacheMillis"`
+	DistroThreshold        float64 `json:"distroThreshold"`
+	HealthCheckEnabled     bool    `json:"healthCheckEnabled"`
+	DistroEnabled          bool    `json:"distroEnabled"`
+	EnableStandalone       bool    `json:"enableStandalone"`
+	PushEnabled            bool    `json:"pushEnabled"`
+	CheckTimes             int     `json:"checkTimes"`
+	HttpHealthParams       struct {
+		Max    int     `json:"max"`
+		Min    int     `json:"min"`
+		Factor float64 `json:"factor"`
+	} `json:"httpHealthParams"`
+	TcpHealthParams struct {
+		Max    int     `json:"max"`
+		Min    int     `json:"min"`
+		Factor float64 `json:"factor"`
+	} `json:"tcpHealthParams"`
+	MysqlHealthParams struct {
+		Max    int     `json:"max"`
+		Min    int     `json:"min"`
+		Factor float64 `json:"factor"`
+	} `json:"mysqlHealthParams"`
+	IncrementalList                          []string `json:"incrementalList"`
+	ServerStatusSynchronizationPeriodMillis  int      `json:"serverStatusSynchronizationPeriodMillis"`
+	ServiceStatusSynchronizationPeriodMillis int      `json:"serviceStatusSynchronizationPeriodMillis"`
+	DisableAddIP                             bool     `json:"disableAddIP"`
+	SendBeatOnly                             bool     `json:"sendBeatOnly"`
+	LimitedUrlMap                            struct {
+	} `json:"limitedUrlMap"`
+	DistroServerExpiredMillis int      `json:"distroServerExpiredMillis"`
+	PushGoVersion             string   `json:"pushGoVersion"`
+	PushJavaVersion           string   `json:"pushJavaVersion"`
+	PushPythonVersion         string   `json:"pushPythonVersion"`
+	PushCVersion              string   `json:"pushCVersion"`
+	EnableAuthentication      bool     `json:"enableAuthentication"`
+	OverriddenServerStatus    string   `json:"overriddenServerStatus"`
+	DefaultInstanceEphemeral  bool     `json:"defaultInstanceEphemeral"`
+	HealthCheckWhiteList      []string `json:"healthCheckWhiteList"`
+	Checksum                  string   `json:"checksum"`
+}
+
+type ModifyOperatorSwitchRequest struct {
+	Entry string `json:"entry" validate:"required"`  // 开关名
+	Value string `json:"value" validate:"required"`  // 开关值
+	Debug bool   `json:"debug" validate:"omitempty"` // 是否只在本机生效,true表示本机生效,false表示集群生效
+}
+
+type GetMetricsResponse struct {
+	ServiceCount             int     `json:"serviceCount"`
+	Load                     float64 `json:"load"`
+	Mem                      float64 `json:"mem"`
+	ResponsibleServiceCount  int     `json:"responsibleServiceCount"`
+	InstanceCount            int     `json:"instanceCount"`
+	Cpu                      float64 `json:"cpu"`
+	Status                   string  `json:"status"`
+	ResponsibleInstanceCount int     `json:"responsibleInstanceCount"`
+}
+
+type GetServerListRequest struct {
+	Healthy bool `json:"healthy" validate:"omitempty"` // 是否只返回健康Server节点
+}
+
+type GetServerListResponse struct {
+	Servers []struct {
+		Ip             string `json:"ip"`
+		ServePort      int    `json:"servePort"`
+		Site           string `json:"site"`
+		Weight         int    `json:"weight"`
+		AdWeight       int    `json:"adWeight"`
+		Alive          bool   `json:"alive"`
+		LastRefTime    int    `json:"lastRefTime"`
+		LastRefTimeStr string `json:"lastRefTimeStr"`
+		Key            string `json:"key"`
+	} `json:"servers"`
+}
+
+type GetLeaderResponse struct {
+	Leader struct {
+		HeartbeatDueMs int    `json:"heartbeatDueMs"`
+		Ip             string `json:"ip"`
+		LeaderDueMs    int    `json:"leaderDueMs"`
+		State          string `json:"state"`
+		Term           int    `json:"term"`
+		VoteFor        string `json:"voteFor"`
+	} `json:"leader"`
+}
+
+type UpdateInstanceHealthStatusRequest struct {
+	IP          string `json:"ip" validate:"required"`           // 实例 IP
+	Port        int    `json:"port" validate:"required"`         // 实例端口
+	NamespaceId string `json:"namespaceId" validate:"omitempty"` // 命名空间 ID
+	ClusterName string `json:"clusterName" validate:"omitempty"` // 集群名称
+	ServiceName string `json:"serviceName" validate:"required"`  // 服务名称
+	GroupName   string `json:"groupName" validate:"omitempty"`   // 分组名称
+	Healthy     bool   `json:"healthy" validate:"required"`      // 是否健康
 }
