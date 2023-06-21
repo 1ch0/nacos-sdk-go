@@ -13,11 +13,11 @@ import (
 
 type Client struct {
 	Config         *Config
-	Authentication *Authentication
+	authentication *authentication
 	client         *resty.Client
-	HttpMethod     string
-	IPath          string
-	Error          error
+	httpMethod     string
+	iPath          string
+	error          error
 }
 
 type Config struct {
@@ -26,7 +26,7 @@ type Config struct {
 	Password string
 }
 
-type Authentication struct {
+type authentication struct {
 	AccessToken string `json:"accessToken"`
 	TokenTtl    int    `json:"tokenTtl"`
 	GlobalAdmin bool   `json:"globalAdmin"`
@@ -35,11 +35,11 @@ type Authentication struct {
 func New(config *Config) *Client {
 	return &Client{
 		Config:         config,
-		Authentication: &Authentication{},
+		authentication: &authentication{},
 		client:         resty.New().SetTimeout(5 * time.Second).SetDisableWarn(true).SetRetryCount(3),
-		HttpMethod:     "",
-		IPath:          "",
-		Error:          nil}
+		httpMethod:     "",
+		iPath:          "",
+		error:          nil}
 }
 
 // Health 检查服务是否健康
@@ -64,7 +64,7 @@ func (c *Client) Login() error {
 	if resp.StatusCode() != http.StatusOK || response == nil {
 		return fmt.Errorf("nacos auth failed: #%s", resp.Body())
 	}
-	c.Authentication = &Authentication{
+	c.authentication = &authentication{
 		response.AccessToken,
 		response.TokenTtl,
 		response.GlobalAdmin,
@@ -76,12 +76,12 @@ func (c *Client) Login() error {
 }
 
 func (c *Client) resetToken() {
-	if c.Authentication.TokenTtl <= 10 {
+	if c.authentication.TokenTtl <= 10 {
 		return
 	}
-	duration := time.Second * time.Duration(c.Authentication.TokenTtl-10)
+	duration := time.Second * time.Duration(c.authentication.TokenTtl-10)
 	timer := time.AfterFunc(duration, func() {
-		c.Authentication.AccessToken = ""
+		c.authentication.AccessToken = ""
 	})
 
 	// Wait for the timer to expire
@@ -89,7 +89,7 @@ func (c *Client) resetToken() {
 }
 
 func (c *Client) checkAuth() error {
-	if c.Authentication.AccessToken == "" {
+	if c.authentication.AccessToken == "" {
 		err := c.Login()
 		if err != nil {
 			return err
@@ -113,35 +113,35 @@ func (c *Client) checkReq(req interface{}) error {
 }
 
 func (c *Client) set(method string, path string, req interface{}) *Client {
-	c.IPath = path
+	c.iPath = path
 	if !validMethod(method) {
-		c.Error = fmt.Errorf("request %s%s invalid http request method: %s", c.Config.Addr, c.IPath, method)
+		c.error = fmt.Errorf("request %s%s invalid http request method: %s", c.Config.Addr, c.iPath, method)
 	}
-	c.HttpMethod = method
+	c.httpMethod = method
 	err := c.checkReq(req)
 	if err != nil {
-		c.Error = fmt.Errorf("request %s%s invalid params: %s", c.Config.Addr, c.IPath, err)
+		c.error = fmt.Errorf("request %s%s invalid params: %s", c.Config.Addr, c.iPath, err)
 	}
 	return c
 }
 
 func (c *Client) clear() *Client {
-	c.HttpMethod = ""
-	c.IPath = ""
-	c.Error = nil
+	c.httpMethod = ""
+	c.iPath = ""
+	c.error = nil
 	return c
 }
 
 func (c *Client) do(result interface{}, queryParams map[string]string) error {
 	defer c.clear()
-	if c.Error != nil {
-		return c.Error
+	if c.error != nil {
+		return c.error
 	}
 	resp, err := c.client.R().
-		SetQueryParam(AccessToken, c.Authentication.AccessToken).
-		SetQueryParams(queryParams).SetResult(result).Execute(c.HttpMethod, c.Config.Addr+c.IPath)
+		SetQueryParam(AccessToken, c.authentication.AccessToken).
+		SetQueryParams(queryParams).SetResult(result).Execute(c.httpMethod, c.Config.Addr+c.iPath)
 	if err != nil || resp.StatusCode() != http.StatusOK {
-		return fmt.Errorf("error!  %s %s %s", c.HttpMethod, c.IPath, resp)
+		return fmt.Errorf("error!  %s %s %s", c.httpMethod, c.iPath, resp)
 	}
 	return nil
 }
