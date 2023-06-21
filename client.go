@@ -15,6 +15,9 @@ type Client struct {
 	Config         *Config
 	Authentication *Authentication
 	client         *resty.Client
+	HttpMethod     string
+	IPath          string
+	Error          error
 }
 
 type Config struct {
@@ -34,12 +37,14 @@ func New(config *Config) *Client {
 		Config:         config,
 		Authentication: &Authentication{},
 		client:         resty.New().SetTimeout(5 * time.Second).SetDisableWarn(true).SetRetryCount(3),
-	}
+		HttpMethod:     "",
+		IPath:          "",
+		Error:          nil}
 }
 
 // Health 检查服务是否健康
 func (c *Client) Health() error {
-	_, err := c.client.R().SetBasicAuth(c.Config.Username, c.Config.Password).Get(c.Config.Addr)
+	_, err := c.client.R().Get(c.Config.Addr)
 	if err != nil {
 		return err
 	}
@@ -65,7 +70,22 @@ func (c *Client) Login() error {
 		response.GlobalAdmin,
 	}
 
+	go c.resetToken()
+
 	return nil
+}
+
+func (c *Client) resetToken() {
+	if c.Authentication.TokenTtl <= 10 {
+		return
+	}
+	duration := time.Second * time.Duration(c.Authentication.TokenTtl-10)
+	timer := time.AfterFunc(duration, func() {
+		c.Authentication.AccessToken = ""
+	})
+
+	// Wait for the timer to expire
+	<-timer.C
 }
 
 func (c *Client) checkAuth() error {
@@ -78,7 +98,7 @@ func (c *Client) checkAuth() error {
 	return nil
 }
 
-func (c *Client) Check(req interface{}) error {
+func (c *Client) checkReq(req interface{}) error {
 	err := c.checkAuth()
 	if err != nil {
 		return err
@@ -92,64 +112,36 @@ func (c *Client) Check(req interface{}) error {
 	return nil
 }
 
-func (c *Client) Execute(method string, req interface{}, path string, result interface{}, queryParams map[string]string) error {
+func (c *Client) check(method string, path string, req interface{}) *Client {
+	c.IPath = path
 	if !validMethod(method) {
-		return fmt.Errorf("invalid method: %s", method)
+		c.Error = fmt.Errorf("request %s%s invalid http request method: %s", c.Config.Addr, c.IPath, method)
 	}
-	err := c.Check(req)
+	c.HttpMethod = method
+	err := c.checkReq(req)
 	if err != nil {
-		return err
+		c.Error = fmt.Errorf("request %s%s invalid params: %s", c.Config.Addr, c.IPath, err)
 	}
-
-	resp, err := c.client.R().
-		SetQueryParam(AccessToken, c.Authentication.AccessToken).
-		SetQueryParams(queryParams).SetResult(result).Execute(method, c.Config.Addr+path)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return fmt.Errorf("error!  %s %s %s", method, path, resp)
-	}
-
-	return nil
+	return c
 }
 
-func (c *Client) Do(params *DoParams) error {
-	if !validMethod(params.Method) {
-		return fmt.Errorf("invalid method: %s", params.Method)
-	}
-	err := c.Check(params.Req)
-	if err != nil {
-		return err
-	}
-
-	resp, err := c.client.R().
-		SetQueryParam(AccessToken, c.Authentication.AccessToken).
-		SetQueryParams(params.QueryParams).SetResult(params.Result).Execute(params.Method, c.Config.Addr+params.Path)
-
-	if err != nil || resp.StatusCode() != http.StatusOK {
-		return fmt.Errorf("error!  %s %s %s", params.Method, params.Path, resp)
-	}
-
-	return nil
+func (c *Client) clear() *Client {
+	c.HttpMethod = ""
+	c.IPath = ""
+	c.Error = nil
+	return c
 }
 
-func (c *Client) CheckDoParams(params *DoParams) error {
-	if !validMethod(params.Method) {
-		return fmt.Errorf("invalid method: %s", params.Method)
+func (c *Client) do(result interface{}, queryParams map[string]string) error {
+	defer c.clear()
+	if c.Error != nil {
+		return c.Error
 	}
-	if err := c.checkAuth(); err != nil {
-		return err
-	}
-	defaults.SetDefaults(params.Req)
-	validate := validator.New()
-	if err := validate.Struct(params.Req); err != nil {
-		return err
-	}
-
-	// TODO check params.Result
-	for k, v := range params.QueryParams {
-		if v == "" {
-			return fmt.Errorf("invalid query param: %s", k)
-		}
+	resp, err := c.client.R().
+		SetQueryParam(AccessToken, c.Authentication.AccessToken).
+		SetQueryParams(queryParams).SetResult(result).Execute(c.HttpMethod, c.Config.Addr+c.IPath)
+	if err != nil || resp.StatusCode() != http.StatusOK {
+		return fmt.Errorf("error!  %s %s %s", c.HttpMethod, c.IPath, resp)
 	}
 	return nil
 }

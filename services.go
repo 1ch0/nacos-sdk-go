@@ -10,12 +10,8 @@ import (
 
 // RegisterInstance 注册实例
 func (c *Client) RegisterInstance(req *RegisterInstanceRequest) error {
-	return c.Execute(
-		http.MethodPost,
-		req,
-		IPathInstance,
-		&struct{}{},
-		map[string]string{
+	return c.check(http.MethodPost, IPathInstance, req).
+		do(&struct{}{}, map[string]string{
 			ServiceIP:          req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
 			ServiceNamespaceId: req.NamespaceId,
@@ -32,12 +28,8 @@ func (c *Client) RegisterInstance(req *RegisterInstanceRequest) error {
 
 // DeregisterInstance 注销实例
 func (c *Client) DeregisterInstance(req *DeregisterInstanceRequest) error {
-	return c.Execute(
-		http.MethodDelete,
-		req,
-		IPathInstance,
-		&struct{}{},
-		map[string]string{
+	return c.check(http.MethodDelete, IPathInstance, req).
+		do(&struct{}{}, map[string]string{
 			ServiceIP:          req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
 			ServiceNamespaceId: req.NamespaceId,
@@ -50,12 +42,8 @@ func (c *Client) DeregisterInstance(req *DeregisterInstanceRequest) error {
 
 // ModifyInstance 修改实例
 func (c *Client) ModifyInstance(req *ModifyInstanceRequest) error {
-	return c.Execute(
-		http.MethodPut,
-		req,
-		IPathInstance,
-		&struct{}{},
-		map[string]string{
+	return c.check(http.MethodPut, IPathInstance, req).
+		do(&struct{}{}, map[string]string{
 			ServiceIP:          req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
 			ServiceNamespaceId: req.NamespaceId,
@@ -73,12 +61,8 @@ func (c *Client) ModifyInstance(req *ModifyInstanceRequest) error {
 // GetInstances 查询实例列表
 func (c *Client) GetInstances(req *GetInstancesRequest) (*GetInstancesResponse, error) {
 	result := &GetInstancesResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		req,
-		IPathInstanceList,
-		result,
-		map[string]string{
+	return result, c.check(http.MethodGet, IPathInstanceList, req).
+		do(result, map[string]string{
 			ServiceNamespaceId: req.NamespaceId,
 			ServiceName:        req.ServiceName,
 			ServiceGroupName:   req.GroupName,
@@ -89,13 +73,8 @@ func (c *Client) GetInstances(req *GetInstancesRequest) (*GetInstancesResponse, 
 // GetInstance 查询实例详情
 func (c *Client) GetInstance(req *GetInstanceRequest) (*GetInstanceResponse, error) {
 	result := &GetInstanceResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		req,
-		IPathInstance,
-		result,
-		map[string]string{
-			ServiceIP:          req.IP,
+	return result, c.check(http.MethodGet, IPathInstance, req).
+		do(result, map[string]string{ServiceIP: req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
 			ServiceNamespaceId: req.NamespaceId,
 			ServiceClusterName: req.ClusterName,
@@ -109,12 +88,8 @@ func (c *Client) GetInstance(req *GetInstanceRequest) (*GetInstanceResponse, err
 // SendHeartbeat 发送心跳
 func (c *Client) SendHeartbeat(req *SendHeartbeatRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodPut,
-		req,
-		IPathInstanceBeat,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodPut, IPathInstanceBeat, req).
+		do(result, map[string]string{
 			ServiceName:        req.ServiceName,
 			ServiceIP:          req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
@@ -128,12 +103,8 @@ func (c *Client) SendHeartbeat(req *SendHeartbeatRequest) (bool, error) {
 // CreateService 创建服务 //todo
 func (c *Client) CreateService(req *CreateServiceRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodPost,
-		req,
-		IPathService,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodPost, IPathService, req).
+		do(result, map[string]string{
 			ServiceName:             req.ServiceName,
 			ServiceGroupName:        req.GroupName,
 			ServiceNamespaceId:      req.NamespaceId,
@@ -144,12 +115,8 @@ func (c *Client) CreateService(req *CreateServiceRequest) (bool, error) {
 // DeleteService 删除服务
 func (c *Client) DeleteService(req *DeleteServiceRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodDelete,
-		req,
-		IPathService,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodDelete, IPathService, req).
+		do(result, map[string]string{
 			ServiceName:        req.ServiceName,
 			ServiceGroupName:   req.GroupName,
 			ServiceNamespaceId: req.NamespaceId,
@@ -159,12 +126,8 @@ func (c *Client) DeleteService(req *DeleteServiceRequest) (bool, error) {
 // ModifyService 修改服务 //todo
 func (c *Client) ModifyService(req *ModifyServiceRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodPut,
-		req,
-		IPathService,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodPut, IPathService, req).
+		do(result, map[string]string{
 			ServiceName:             req.ServiceName,
 			ServiceGroupName:        req.GroupName,
 			ServiceNamespaceId:      req.NamespaceId,
@@ -175,12 +138,8 @@ func (c *Client) ModifyService(req *ModifyServiceRequest) (bool, error) {
 // GetService 查询服务详情
 func (c *Client) GetService(req *ServiceBase) (*ServiceBaseResponse, error) {
 	result := &ServiceBaseResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		req,
-		IPathService,
-		result,
-		map[string]string{
+	return result, c.check(http.MethodGet, IPathService, req).
+		do(result, map[string]string{
 			ServiceName:        req.ServiceName,
 			ServiceGroupName:   req.GroupName,
 			ServiceNamespaceId: req.NamespaceId,
@@ -190,12 +149,8 @@ func (c *Client) GetService(req *ServiceBase) (*ServiceBaseResponse, error) {
 // GetServiceList 查询服务列表
 func (c *Client) GetServiceList(req *GetServiceListRequest) (*GetServiceListResponse, error) {
 	result := &GetServiceListResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		req,
-		IPathServiceList,
-		result,
-		map[string]string{
+	return result, c.check(http.MethodGet, IPathServiceList, req).
+		do(result, map[string]string{
 			PageNo:             strconv.Itoa(req.PageNo),
 			PageSize:           strconv.Itoa(req.PageSize),
 			ServiceNamespaceId: req.NamespaceId,
@@ -206,23 +161,14 @@ func (c *Client) GetServiceList(req *GetServiceListRequest) (*GetServiceListResp
 // GetOperatorSwitch 查询系统开关
 func (c *Client) GetOperatorSwitch() (*GetOperatorSwitchResponse, error) {
 	result := &GetOperatorSwitchResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		&struct{}{},
-		IPathOperatorSwitch,
-		result,
-		map[string]string{})
+	return result, c.check(http.MethodGet, IPathOperatorSwitch, &struct{}{}).do(result, map[string]string{})
 }
 
 // ModifyOperatorSwitch 修改系统开关
 func (c *Client) ModifyOperatorSwitch(req *ModifyOperatorSwitchRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodPut,
-		req,
-		IPathOperatorSwitch,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodPut, IPathOperatorSwitch, req).
+		do(result, map[string]string{
 			OperatorEntry: req.Entry,
 			OperatorValue: req.Value,
 			OperatorDebug: strconv.FormatBool(req.Debug),
@@ -232,47 +178,27 @@ func (c *Client) ModifyOperatorSwitch(req *ModifyOperatorSwitchRequest) (bool, e
 // GetOperatorMetrics 查看系统当前数据指标
 func (c *Client) GetOperatorMetrics() (*GetMetricsResponse, error) {
 	result := &GetMetricsResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		&struct{}{},
-		IPathOperatorMetrics,
-		result,
-		map[string]string{})
+	return result, c.check(http.MethodGet, IPathOperatorMetrics, &struct{}{}).do(result, map[string]string{})
 }
 
 // GetOperatorServerList 查看当前集群Server列表
 func (c *Client) GetOperatorServerList(req *GetServerListRequest) (*GetServerListResponse, error) {
 	result := &GetServerListResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		&struct{}{},
-		IPathOperatorServers,
-		result,
-		map[string]string{
-			ServiceHealthy: strconv.FormatBool(req.Healthy),
-		})
+	return result, c.check(http.MethodGet, IPathOperatorServers, req).
+		do(result, map[string]string{ServiceHealthy: strconv.FormatBool(req.Healthy)})
 }
 
 // GetOperatorLeader 查看当前集群leader
 func (c *Client) GetOperatorLeader() (*GetLeaderResponse, error) {
 	result := &GetLeaderResponse{}
-	return result, c.Execute(
-		http.MethodGet,
-		&struct{}{},
-		IPathOperatorLeader,
-		result,
-		map[string]string{})
+	return result, c.check(http.MethodGet, IPathOperatorLeader, &struct{}{}).do(result, map[string]string{})
 }
 
 // UpdateInstanceHealthStatus 更新实例的健康状态
 func (c *Client) UpdateInstanceHealthStatus(req *UpdateInstanceHealthStatusRequest) (bool, error) {
 	result := &BoolResult
-	return *result, c.Execute(
-		http.MethodPut,
-		req,
-		IPathInstanceHealth,
-		result,
-		map[string]string{
+	return *result, c.check(http.MethodPut, IPathInstanceHealth, req).
+		do(result, map[string]string{
 			ServiceName:        req.ServiceName,
 			ServiceIP:          req.IP,
 			ServicePort:        strconv.Itoa(req.Port),
