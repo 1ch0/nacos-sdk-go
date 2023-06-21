@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -16,7 +15,6 @@ type Client struct {
 	Config         *Config
 	Authentication *Authentication
 	client         *resty.Client
-	body           []byte
 }
 
 type Config struct {
@@ -36,7 +34,6 @@ func New(config *Config) *Client {
 		Config:         config,
 		Authentication: &Authentication{},
 		client:         resty.New().SetTimeout(5 * time.Second).SetDisableWarn(true).SetRetryCount(3),
-		body:           []byte{},
 	}
 }
 
@@ -92,12 +89,6 @@ func (c *Client) Check(req interface{}) error {
 	if err != nil {
 		return err
 	}
-	data, err := json.Marshal(req)
-	if err != nil {
-		return err
-	}
-	c.body = data
-
 	return nil
 }
 
@@ -111,7 +102,6 @@ func (c *Client) Execute(method string, req interface{}, path string, result int
 	}
 
 	resp, err := c.client.R().
-		SetBody(c.body).
 		SetQueryParam(AccessToken, c.Authentication.AccessToken).
 		SetQueryParams(queryParams).SetResult(result).Execute(method, c.Config.Addr+path)
 
