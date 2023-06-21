@@ -9,7 +9,7 @@ import (
 func (c *Client) GetConfig(req *ConfigBase) (string, error) {
 	result := &StringResult
 	return *result,
-		c.check(http.MethodGet, IPathConfig, req).
+		c.set(http.MethodGet, IPathConfig, req).
 			do(result,
 				map[string]string{
 					ConfigDataId: req.DataId,
@@ -22,7 +22,7 @@ func (c *Client) GetConfig(req *ConfigBase) (string, error) {
 func (c *Client) ListenConfig(req *ListeningConfigs) (string, error) {
 	result := &StringResult
 	return *result,
-		c.check(http.MethodGet, IPathConfigListener, req).
+		c.set(http.MethodGet, IPathConfigListener, req).
 			do(result,
 				map[string]string{
 					ConfigDataId: req.DataId,
@@ -33,7 +33,7 @@ func (c *Client) ListenConfig(req *ListeningConfigs) (string, error) {
 
 // PublishConfig 发布配置
 func (c *Client) PublishConfig(req *PublishConfigRequest) error {
-	return c.check(http.MethodPost, IPathConfig, req).
+	return c.set(http.MethodPost, IPathConfig, req).
 		do(&struct{}{},
 			map[string]string{
 				ConfigDataId:      req.DataId,
@@ -46,7 +46,7 @@ func (c *Client) PublishConfig(req *PublishConfigRequest) error {
 
 // DeleteConfig 删除配置
 func (c *Client) DeleteConfig(req *ConfigBase) error {
-	return c.check(http.MethodDelete, IPathConfig, req).
+	return c.set(http.MethodDelete, IPathConfig, req).
 		do(&struct{}{},
 			map[string]string{
 				ConfigDataId: req.DataId,
@@ -59,7 +59,7 @@ func (c *Client) DeleteConfig(req *ConfigBase) error {
 func (c *Client) GetConfigHistory(req *GetConfigHistoryRequest) (*GetConfigHistoryResponse, error) {
 	result := &GetConfigHistoryResponse{}
 	return result,
-		c.check(http.MethodGet, IPathConfigHistory, req).
+		c.set(http.MethodGet, IPathConfigHistory, req).
 			do(result,
 				map[string]string{
 					ConfigDataId: req.DataId,
@@ -74,7 +74,7 @@ func (c *Client) GetConfigHistory(req *GetConfigHistoryRequest) (*GetConfigHisto
 func (c *Client) GetConfigHistoryDetail(req *GetConfigHistoryDetailRequest) (*GetConfigHistoryDetailResponse, error) {
 	result := &GetConfigHistoryDetailResponse{}
 	return result,
-		c.check(http.MethodGet, IPathConfigHistoryDetail, req).
+		c.set(http.MethodGet, IPathConfigHistoryDetail, req).
 			do(result,
 				map[string]string{
 					ConfigDataId: req.DataId,
@@ -88,7 +88,7 @@ func (c *Client) GetConfigHistoryDetail(req *GetConfigHistoryDetailRequest) (*Ge
 func (c *Client) GetConfigHistoryPrevious(req *GetConfigHistoryPreviousRequest) (*GetConfigHistoryDetailResponse, error) {
 	result := &GetConfigHistoryDetailResponse{}
 	return result,
-		c.check(http.MethodGet, IPathConfigHistoryPrevious, req).
+		c.set(http.MethodGet, IPathConfigHistoryPrevious, req).
 			do(result,
 				map[string]string{
 					ConfigDataId: req.DataId,

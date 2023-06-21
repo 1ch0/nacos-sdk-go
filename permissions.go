@@ -11,7 +11,7 @@ import (
 func (c *Client) GetUsers(req *Page) (*GetUsersResponse, error) {
 	result := &GetUsersResponse{}
 	return result,
-		c.check(http.MethodGet, IPathUser, req).
+		c.set(http.MethodGet, IPathUser, req).
 			do(result,
 				map[string]string{
 					Search:   SearchType,
@@ -22,7 +22,7 @@ func (c *Client) GetUsers(req *Page) (*GetUsersResponse, error) {
 
 // CreateUser 创建用户
 func (c *Client) CreateUser(req *User) error {
-	return c.check(http.MethodPost, IPathUser, req).
+	return c.set(http.MethodPost, IPathUser, req).
 		do(&struct{}{},
 			map[string]string{
 				Username: req.Username,
@@ -32,7 +32,7 @@ func (c *Client) CreateUser(req *User) error {
 
 // PutUser 修改用户
 func (c *Client) PutUser(req *User) error {
-	return c.check(http.MethodPut, IPathUser, req).
+	return c.set(http.MethodPut, IPathUser, req).
 		do(&struct{}{},
 			map[string]string{
 				Username:    req.Username,
@@ -42,7 +42,7 @@ func (c *Client) PutUser(req *User) error {
 
 // DeleteUser 删除用户
 func (c *Client) DeleteUser(req *DeleteUserRequest) error {
-	return c.check(http.MethodDelete, IPathUser, req).
+	return c.set(http.MethodDelete, IPathUser, req).
 		do(&struct{}{},
 			map[string]string{
 				Username: req.Username,
@@ -52,7 +52,7 @@ func (c *Client) DeleteUser(req *DeleteUserRequest) error {
 func (c *Client) GetRoles(req *Page) (*GetRolesResponse, error) {
 	result := &GetRolesResponse{}
 	return result,
-		c.check(http.MethodGet, IPathRoles, req).
+		c.set(http.MethodGet, IPathRoles, req).
 			do(&struct{}{},
 				map[string]string{
 					Search:   SearchType,
@@ -62,7 +62,7 @@ func (c *Client) GetRoles(req *Page) (*GetRolesResponse, error) {
 }
 
 func (c *Client) CreateRoles(req *CreateRoleRequest) error {
-	return c.check(http.MethodPost, IPathRoles, req).
+	return c.set(http.MethodPost, IPathRoles, req).
 		do(&struct{}{},
 			map[string]string{
 				Username: req.Username,
@@ -71,7 +71,7 @@ func (c *Client) CreateRoles(req *CreateRoleRequest) error {
 }
 
 func (c *Client) DeleteRoles(req *DeleteRoleRequest) error {
-	return c.check(http.MethodDelete, IPathRoles, req).
+	return c.set(http.MethodDelete, IPathRoles, req).
 		do(&struct{}{},
 			map[string]string{
 				Username: req.Username,
@@ -85,7 +85,7 @@ func (c *Client) DeleteRoles(req *DeleteRoleRequest) error {
 func (c *Client) GetPermissions(req *Page) (*GetPermissions, error) {
 	result := &GetPermissions{}
 	return result,
-		c.check(http.MethodGet, IPathPermission, req).
+		c.set(http.MethodGet, IPathPermission, req).
 			do(result,
 				map[string]string{
 					Search:   SearchType,
@@ -96,7 +96,7 @@ func (c *Client) GetPermissions(req *Page) (*GetPermissions, error) {
 
 // CreatePermission 创建权限
 func (c *Client) CreatePermission(req *CreatePermissionRequest) error {
-	return c.check(http.MethodPost, IPathPermission, req).
+	return c.set(http.MethodPost, IPathPermission, req).
 		do(&struct{}{},
 			map[string]string{
 				Role:             req.Role,
@@ -106,7 +106,7 @@ func (c *Client) CreatePermission(req *CreatePermissionRequest) error {
 }
 
 func (c *Client) DeletePermission(req *DeletePermissionRequest) error {
-	return c.check(http.MethodDelete, IPathPermission, req).
+	return c.set(http.MethodDelete, IPathPermission, req).
 		do(&struct{}{},
 			map[string]string{
 				Role:             req.Role,

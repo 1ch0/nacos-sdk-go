@@ -8,7 +8,7 @@ import (
 func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
 	result := &GetNamespacesResponse{}
 	return result,
-		c.check(http.MethodGet, IPathNamespaces, &struct{}{}).
+		c.set(http.MethodGet, IPathNamespaces, &struct{}{}).
 			do(result, map[string]string{})
 }
 
@@ -16,7 +16,7 @@ func (c *Client) GetNamespaces() (*GetNamespacesResponse, error) {
 func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
 	result := &BoolResult
 	return *result,
-		c.check(http.MethodPost, IPathNamespaces, req).
+		c.set(http.MethodPost, IPathNamespaces, req).
 			do(result,
 				map[string]string{
 					PermissionCustomNamespaceId: req.CustomNamespaceId,
@@ -29,7 +29,7 @@ func (c *Client) CreateNamespace(req *CreateNamespaceRequest) (bool, error) {
 func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
 	result := &BoolResult
 	return *result,
-		c.check(http.MethodPut, IPathNamespaces, req).
+		c.set(http.MethodPut, IPathNamespaces, req).
 			do(result,
 				map[string]string{
 					NameSpace:                   req.Namespace,
@@ -42,7 +42,7 @@ func (c *Client) PutNamespace(req *PutNamespaceRequest) (bool, error) {
 func (c *Client) DeleteNamespace(req *DeleteNamespaceRequest) (bool, error) {
 	result := &BoolResult
 	return *result,
-		c.check(http.MethodDelete, IPathNamespaces, req).
+		c.set(http.MethodDelete, IPathNamespaces, req).
 			do(result,
 				map[string]string{
 					PermissionNamespaceId: req.NamespaceId,

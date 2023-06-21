@@ -112,7 +112,7 @@ func (c *Client) checkReq(req interface{}) error {
 	return nil
 }
 
-func (c *Client) check(method string, path string, req interface{}) *Client {
+func (c *Client) set(method string, path string, req interface{}) *Client {
 	c.IPath = path
 	if !validMethod(method) {
 		c.Error = fmt.Errorf("request %s%s invalid http request method: %s", c.Config.Addr, c.IPath, method)
