@@ -21,9 +21,13 @@ type Client struct {
 }
 
 type Config struct {
-	Addr     string
-	Username string
-	Password string
+	Version  string `yaml:"version"`
+	Addr     string `yaml:"addr"`
+	Scheme   string `yaml:"scheme"`
+	IP       string `yaml:"ip"`
+	Port     string `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }
 
 type authentication struct {
@@ -34,12 +38,22 @@ type authentication struct {
 
 func New(config *Config) *Client {
 	return &Client{
-		Config:         config,
+		Config:         config.set(),
 		authentication: &authentication{},
 		client:         resty.New().SetTimeout(5 * time.Second).SetDisableWarn(true).SetRetryCount(3),
 		httpMethod:     "",
 		iPath:          "",
 		error:          nil}
+}
+
+func (c *Config) set() *Config {
+	if c.Addr == "" {
+		if c.Scheme != "" {
+			c.Addr = fmt.Sprintf("%s://%s:%s", c.Scheme, c.IP, c.Port)
+		}
+		c.Addr = fmt.Sprintf("http://%s:%s", c.IP, c.Port)
+	}
+	return c
 }
 
 // Health 检查服务是否健康
