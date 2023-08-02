@@ -1,2 +1,2 @@
 # nacos-client
-Easy nacos client for gopher.
+A lightweight NACOS client.
