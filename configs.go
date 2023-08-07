@@ -33,8 +33,9 @@ func (c *Client) ListenConfig(req *ListeningConfigs) (string, error) {
 
 // PublishConfig 发布配置
 func (c *Client) PublishConfig(req *PublishConfigRequest) error {
+	result := BoolResult
 	return c.set(http.MethodPost, IPathConfig, req).
-		do(&struct{}{},
+		do(result,
 			map[string]string{
 				ConfigDataId:      req.DataId,
 				Tenant:            req.Tenant,
