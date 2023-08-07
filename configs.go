@@ -47,8 +47,9 @@ func (c *Client) PublishConfig(req *PublishConfigRequest) error {
 
 // DeleteConfig 删除配置
 func (c *Client) DeleteConfig(req *ConfigBase) error {
+	result := BoolResult
 	return c.set(http.MethodDelete, IPathConfig, req).
-		do(&struct{}{},
+		do(result,
 			map[string]string{
 				ConfigDataId: req.DataId,
 				Tenant:       req.Tenant,
