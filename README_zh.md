@@ -1,6 +1,6 @@
 # nacos-client
-[![build workflow](https://github.com/redis/go-redis/actions/workflows/build.yml/badge.svg)](https://github.com/redis/go-redis/actions)
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/redis/go-redis/v9)](https://pkg.go.dev/github.com/redis/go-redis/v9?tab=doc)
+[![build workflow](https://github.com/1ch0/nacos-client/actions/workflows/badge.yml/badge.svg)](https://github.com/1ch0/nacos-client/actions)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/1ch0/nacos-client)](https://pkg.go.dev/github.com/1ch0/nacos-client?tab=doc)
 
 > nacos-client is light weight nacos client.
 
