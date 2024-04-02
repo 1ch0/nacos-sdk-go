@@ -1,8 +1,8 @@
-# nacos-client
+# nacos-sdk-go
 [![build workflow](https://github.com/1ch0/nacos-client/actions/workflows/badge.yml/badge.svg)](https://github.com/1ch0/nacos-client/actions)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/1ch0/nacos-client)](https://pkg.go.dev/github.com/1ch0/nacos-client?tab=doc)
 
-> nacos-client is light weight nacos client.
+> Nacos-sdk-go is a streamlined Nacos client created with Golang that incorporates permission management features.
 
 ## Documentation
 
