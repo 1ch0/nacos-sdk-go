@@ -45,7 +45,7 @@ go get github.com/1ch0/nacos-client
 
 ```go
 import (
-	nacos "github.com/1ch0/nacos-client"
+	nacos "github.com/1ch0/nacos-sdk-go"
 )
 
 func ExampleClient() {
